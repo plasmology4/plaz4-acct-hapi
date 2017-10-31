@@ -1,0 +1,30 @@
+{
+  "Line": [
+    {
+      "Id": "0",
+      "Description": "nov portion of rider insurance",
+      "Amount": 100.0,
+      "DetailType": "JournalEntryLineDetail",
+      "JournalEntryLineDetail": {
+        "PostingType": "Debit",
+         "AccountRef": {
+                "value": "39",
+                "name": "Opening Bal Equity"
+              }
+      }
+    },
+    {
+      "Description": "nov portion of rider insurance",
+      "Amount": 100.0,
+      "DetailType": "JournalEntryLineDetail",
+      "JournalEntryLineDetail": {
+        "PostingType": "Credit",
+              "AccountRef": {
+                "value": "44",
+                "name": "Notes Payable"
+              }
+
+      }
+    }
+  ]
+}
