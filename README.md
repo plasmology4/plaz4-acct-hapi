@@ -1,3 +1,7 @@
+
+
+
+
 Accounting API
 ===============
 
@@ -40,18 +44,48 @@ Account:
 
 
 
+Command To Modfiy Data For QBO
+------------------------------
+We need to first update the middle segment with value 9500 to 9050 & 9100 to 9010
+
+Command: sed -E 's/(.)9500(.*)/\19050\2/' ./coa-upd.csv
+
+This will take care of the following duplicate:
+"90008590","EXPENSE","OTHER","10-9000-8590","Loss on Forgiveness of Intercompany Debt",1575,43,4
+"95008590","EXPENSE","INC TAXES","10-9500-8590","Federal Income Tax ",841,56,
+
+
+**NEED TO MAKE THIS 1 COMMAND**
+
+Actual full commands to re-write file is:
+
+sed -E 's/(.)9500(.*)/\19050\2/' coa-1.csv > coa-2.csv
+
+sed -E 's/(.)9100(.*)/\19010\2/' coa-2.csv > coa-3.csv
+
+sed -E 's/.(.).(.{6})(..*)/\1\2\3/' account-types-upd.csv
 
 
 
 
 
+Check 4 Digit Segment Before
+sed -E 's/.(.{4}).*/\1/' coa-1.csv | sort | uniq | wc -l
+
+Check 3 Digit Segment After
+sed -E 's/.(.).(.{2})(.{4}).*/\1\2/' coa-3.csv | sort | uniq | wc -l
+
+
+Each showing 36
+
+Finally strip the second character of the 4-digit segment
+
+
+sed -E 's/(.)9500(.*)/\19050\2/' journal-entries-orig.csv  | sed -E 's/(.)9100(.*)/\19010\2/' | sed -E 's/.(.).(.{6})(..*)/\1\2\3/' > journal-entries.csv
 
 
 
-
-
-
-
+sed -E 's/(.)9500(.*)/\19050\2/' coa-new.csv  | sed -E 's/(.)9100(.*)/\19010\2/' | sed -E 's/.(.).(.{6})(..*)/"\1\2\3/' > coa.csv 
 
 [Hapi](http://hapijs.com/) is a framework for rapidly building RESTful web services. Whether you
 are building a very simple set of RESTful services or a large scale, cache

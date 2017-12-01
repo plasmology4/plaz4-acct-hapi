@@ -62,6 +62,38 @@ module.exports = function routes(options) {
     }
   }, {
     method: 'GET',
+    path: '/parse-entries/{year}',
+    config: {
+      handler: parseJournalEntriesFromFile,
+      notes: 'Parses entries from local CSV file',
+      tags: ['api'], 
+    }
+  }, {
+    method: 'GET',
+    path: '/parse-entries/{year}/{period}',
+    config: {
+      handler: parseJournalEntriesFromFile,
+      notes: 'Parses entries from local CSV file',
+      tags: ['api'], 
+    }
+  }, {
+    method: 'GET',
+    path: '/parse-ap-invoices',
+    config: {
+      handler: parseApInvoicesFromFile,
+      notes: 'Parses AP invoices from local CSV file',
+      tags: ['api'], 
+    }
+  }, {
+    method: 'GET',
+    path: '/parse-ap-invoices/{invoiceNo}',
+    config: {
+      handler: parseApInvoicesFromFile,
+      notes: 'Parses invoices from local CSV file',
+      tags: ['api'], 
+    }
+  }, {
+    method: 'GET',
     path: '/test-company-info',
     config: {
       handler: testGetCompany,
@@ -156,7 +188,32 @@ function parseAccountsFromFile(request, reply) {
 
 function parseJournalEntriesFromFile(request, reply) {
   console.log("Calling parseJournalEntriesFromFile...");
-    parser.parseJournalEntriesFromFile('../plaz4-acct-hapi/data/journal-entries.csv', function(err, entries){
+  console.log("Calling parseJournalEntriesFromFile: year " + request.params.year);
+  console.log("Calling parseJournalEntriesFromFile: period " + request.params.period);
+
+  var filter = {};
+  if (request.params.year) {
+    filter['year']=request.params.year;
+    if (request.params.period) filter['period']=request.params.period;
+  } else {
+    filter = null;
+  }
+
+  parser.parseJournalEntriesFromFile('../plaz4-acct-hapi/data/journal-entries.csv', filter, function(err, entries){
+    if (err) {
+      console.log('Error parsing file: '+err);
+      return reply(err);
+    } else {
+      console.log('Parsed ' + entries.length + ' non-zero journal entries');
+      return reply(entries);
+    }
+  });
+}
+
+function parseApInvoicesFromFile(request, reply) {
+  console.log("Calling parseApInvoicesFromFile...");
+
+  parser.parseApInvoicesFromFile('../plaz4-acct-hapi/data/ap-invoices.csv', request.params.invoiceNo, function(err, entries){
     if (err) {
       console.log('Error parsing file: '+err);
       return reply(err);

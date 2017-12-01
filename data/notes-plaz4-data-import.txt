@@ -1,0 +1,18 @@
+Notes - Setting Up Plasmology4 in QBO
+
+1. Delete all existing accounts that QBO allows
+
+2. Go to the Data Page > Chart Of Accounts > Create Types 
+
+3. Check the Account Types in QBO when finished.
+
+4. 
+
+5. 
+
+6. 
+
+7. 
+
+8. 
+
