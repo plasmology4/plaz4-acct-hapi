@@ -9,12 +9,12 @@
 4 verbose stack     at checkBinReferences_ (/usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:320:45)
 4 verbose stack     at final (/usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:354:3)
 4 verbose stack     at then (/usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:124:5)
-4 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:243:12
+4 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:311:12
 4 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/graceful-fs/graceful-fs.js:78:16
 4 verbose stack     at tryToString (fs.js:457:3)
 4 verbose stack     at FSReqWrap.readFileAfterClose [as oncomplete] (fs.js:444:12)
 5 verbose cwd /Users/rjohn/projects/plaz4-acct-hapi
-6 error Darwin 16.7.0
+6 error Darwin 17.2.0
 7 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "start"
 8 error node v6.11.4
 9 error npm  v3.10.10

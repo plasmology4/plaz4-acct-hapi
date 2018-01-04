@@ -1,18 +1,23 @@
 Notes - Setting Up Plasmology4 in QBO
 
-1. Delete all existing accounts that QBO allows
+ 1. In QBO Company Settings > Advanced, turn on Account Numbers
 
-2. Go to the Data Page > Chart Of Accounts > Create Types 
+ 2. In Plaz4 Tool, go to the Data Page > Chart Of Accounts > Delete All 
+ 
+ 3. In Plaz4 Tool, go to the Data Page > Chart Of Accounts > Create Types 
+ 
+ 4. Check the Account Types in QBO when finished.
 
-3. Check the Account Types in QBO when finished.
+ 5. In Plaz4 Tool, go to the Data Page > Chart Of Accounts > Syncronize All
 
-4. 
+ 6. Create 'Accounts Payable Liability' account with Number 0002001. Set types to Other Current Liabilities
 
-5. 
+ 7. Create 'Accounts Receivable Asset' account with Number 0001051. Set types to Other Current Assets
 
-6. 
+ 8. Import Customer and Vendor files
 
-7. 
+ 9. In Plaz4 Tool, go to the Data Page > Journal Entries > Import each period from Aug 2013 - Oct 2017
 
-8. 
+10. 
 
+11.

@@ -108,85 +108,91 @@ const journalEntry = require("../handlers/acct");
 const parser = require("../handlers/parser");
 const qboConnector =  require("../handlers/qbo-api-connector");
 
-function getAllJournalEntries(request, reply) {
+function getAllJournalEntries(request, h) {
   console.log("Calling findAllJournalEntries");
   journalEntry.findAllJournalEntries(function(err, data) {
-    return checkAndReply(err, data, reply);
+    return checkResponse(err, data);
   });
 }
 
-function getJournalEntryById(request, reply) {
+function getJournalEntryById(request, h) {
   if (request.params.journalEntryId) {
     console.log("Calling findJournalEntryById:" + request.params.journalEntryId);
     journalEntry.findJournalEntryById(request.params.journalEntryId, function(err, data) {
-      return checkAndReply(err, data, reply);
+      return checkResponse(err, data);
     });
   } else {
-    reply({msg: "No journalEntryId given"});
+    return {msg: "No journalEntryId given"};
   }
 }
 
-function deleteJournalEntryById(request, reply) {
+function deleteJournalEntryById(request, h) {
   if (request.params.id) {
     console.log("Calling deleteJournalEntry:" + request.params.id);
     journalEntry.deleteJournalEntry(request.params.id, function(err, data) {
-      return checkAndReply(err, data, reply);
+      return checkResponse(err, data);
     });
   } else {
-    reply({msg: "No id given"});
+    return {msg: "No id given"};
   }
 }
 
-function saveJournalEntry(request, reply) {
+function saveJournalEntry(request, h) {
   if (request.payload) {
     console.log("Calling upsertJournalEntry:" + JSON.stringify(request.payload.journalEntry));
     var object = request.payload.journalEntry;
     journalEntry.upsertJournalEntry(object, function(err, data) {
-      return checkAndReply(err, data, reply);
+      return checkResponse(err, data);
     });
   } else {
-    reply({msg: "No name given"});
+    return {msg: "No name given"};
   }
 }
 
-function checkAndReply(err, data, reply) {
+function checkResponse(err, data) {
   if (err) {
       return console.error(err);
     } else {
       if (!data) { 
-        return reply({msg: "No data found"}); 
+        return {msg: "No data found"}; 
       }
-      return reply(data);
+      return data;
     }
 }
 
-function parseAccountTypesFromFile(request, reply) {
+async function parseAccountTypesFromFile(request, h) {
   console.log("Calling parseAccountTypesFromFile...");
-  parser.parseAccountTypesFromFile('../plaz4-acct-hapi/data/account-types.csv', function(err, types){
-    if (err) {
-      console.log('Error parsing file: '+err);
-      return reply(err);
-    } else {
-      console.log('Parsed ' + types.length + ' types');
-      return reply(types);
-    }
-  });
+  
+  var data;
+  await parser.parseAccountTypesFromFile('../plaz4-acct-hapi/data/account-types.csv')
+    .then(items => {
+      data = items;
+    })
+    .catch(async err => {
+      console.error('Error parsing file: '+JSON.stringify(err));
+      data = JSON.stringify(err);
+    });  
+
+  return data;
 }
 
-function parseAccountsFromFile(request, reply) {
+async function parseAccountsFromFile(request, h) {
   console.log("Calling parseAccountsFromFile...");
-    parser.parseAccountsFromFile('../plaz4-acct-hapi/data/coa.csv', function(err, accounts){
-    if (err) {
-      console.log('Error parsing file: '+err);
-      return reply(err);
-    } else {
-      console.log('Parsed ' + accounts.length + ' accounts');
-      return reply(accounts);
-    }
-  });
+
+  var data;
+  await parser.parseAccountsFromFile('../plaz4-acct-hapi/data/coa.csv')
+    .then(items => {
+      data = items;
+    })
+    .catch(async err => {
+      console.error('Error parsing file: '+JSON.stringify(err));
+      data = JSON.stringify(err);
+    });  
+
+  return data;
 }
 
-function parseJournalEntriesFromFile(request, reply) {
+async function parseJournalEntriesFromFile(request, h) {
   console.log("Calling parseJournalEntriesFromFile...");
   console.log("Calling parseJournalEntriesFromFile: year " + request.params.year);
   console.log("Calling parseJournalEntriesFromFile: period " + request.params.period);
@@ -199,41 +205,47 @@ function parseJournalEntriesFromFile(request, reply) {
     filter = null;
   }
 
-  parser.parseJournalEntriesFromFile('../plaz4-acct-hapi/data/journal-entries.csv', filter, function(err, entries){
-    if (err) {
-      console.log('Error parsing file: '+err);
-      return reply(err);
-    } else {
-      console.log('Parsed ' + entries.length + ' non-zero journal entries');
-      return reply(entries);
-    }
-  });
+  var data;
+  await parser.parseJournalEntriesFromFile('../plaz4-acct-hapi/data/journal-entries.csv', filter)
+    .then(items => {
+      console.log('Parsed ' + items.length + ' non-zero journal entries');
+      data = items;
+    })
+    .catch(async err => {
+      console.error('Error parsing file: '+JSON.stringify(err));
+      data = JSON.stringify(err);
+    });  
+
+  return data;
 }
 
-function parseApInvoicesFromFile(request, reply) {
+async function parseApInvoicesFromFile(request, h) {
   console.log("Calling parseApInvoicesFromFile...");
 
-  parser.parseApInvoicesFromFile('../plaz4-acct-hapi/data/ap-invoices.csv', request.params.invoiceNo, function(err, entries){
-    if (err) {
-      console.log('Error parsing file: '+err);
-      return reply(err);
-    } else {
-      console.log('Parsed ' + entries.length + ' non-zero journal entries');
-      return reply(entries);
-    }
-  });
+  var data;
+  await parser.parseApInvoicesFromFile('../plaz4-acct-hapi/data/ap-invoices.csv', request.params.invoiceNo)
+    .then(items => {
+      console.log('Parsed ' + items.length + ' non-zero journal entries');
+      data = items;
+    })
+    .catch(async err => {
+      console.error('Error parsing file: '+JSON.stringify(err));
+      data = JSON.stringify(err);
+    });
+
+  return data;
 }
 
-function testGetCompany(request, reply) {
+function testGetCompany(request, h) {
   console.log("Calling getCompanyInfoTest...");
   const companyId = '193514574648884';
   qboConnector.getCompanyInfoTest(companyId, function(err, data){
     if (err) {
       console.log('Error getting data: '+err);
-      return reply(err);
+      return err;
     } else {
       console.log('Data Returned from QBO Connector: ' + JSON.stringify(data));
-      return reply(data);
+      return data;
     }
   });
 }
